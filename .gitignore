@@ -187,3 +187,5 @@ docs/docs/templates
 **/*.tfvars
 **/.terraform.tfstate.lock.info
 **/.terraform.lock.hcl
+
+_scratchpad.py
