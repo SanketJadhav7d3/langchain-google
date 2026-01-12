@@ -3146,7 +3146,6 @@ class ChatGoogleGenerativeAI(_BaseGoogleGenerativeAI, BaseChatModel):
                     )
                     normalized_message = AIMessageChunk(
                         content=text_content,
-                        # Preserve other attributes from the original message
                         additional_kwargs=message.additional_kwargs,
                         response_metadata=message.response_metadata,
                         tool_call_chunks=message.tool_call_chunks,
