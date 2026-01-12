@@ -3138,7 +3138,25 @@ class ChatGoogleGenerativeAI(_BaseGoogleGenerativeAI, BaseChatModel):
                 gen = cast("ChatGenerationChunk", _chat_result.generations[0])
                 message = cast("AIMessageChunk", gen.message)
 
-            # Populate index if missing
+                if isinstance(message.content, list):
+                    text_content = "".join(
+                        item.get("text", "")
+                        for item in message.content
+                        if isinstance(item, dict) and item.get("type") == "text"
+                    )
+                    normalized_message = AIMessageChunk(
+                        content=text_content,
+                        # Preserve other attributes from the original message
+                        additional_kwargs=message.additional_kwargs,
+                        response_metadata=message.response_metadata,
+                        tool_call_chunks=message.tool_call_chunks,
+                        id=message.id,
+                    )
+                    gen = ChatGenerationChunk(
+                        message=normalized_message,
+                        generation_info=gen.generation_info,
+                    )
+
             if isinstance(message.content, list):
                 for block in message.content:
                     if isinstance(block, dict) and "type" in block:
@@ -3206,7 +3224,24 @@ class ChatGoogleGenerativeAI(_BaseGoogleGenerativeAI, BaseChatModel):
             gen = cast("ChatGenerationChunk", _chat_result.generations[0])
             message = cast("AIMessageChunk", gen.message)
 
-            # populate index if missing
+            if isinstance(message.content, list):
+                text_content = "".join(
+                    item.get("text", "")
+                    for item in message.content
+                    if isinstance(item, dict) and item.get("type") == "text"
+                )
+                normalized_message = AIMessageChunk(
+                    content=text_content,
+                    additional_kwargs=message.additional_kwargs,
+                    response_metadata=message.response_metadata,
+                    tool_call_chunks=message.tool_call_chunks,
+                    id=message.id,
+                )
+                gen = ChatGenerationChunk(
+                    message=normalized_message,
+                    generation_info=gen.generation_info,
+                )
+
             if isinstance(message.content, list):
                 for block in message.content:
                     if isinstance(block, dict) and "type" in block:
